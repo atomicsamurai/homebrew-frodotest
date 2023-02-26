@@ -1,4 +1,4 @@
-class Hello < Formula
+class Frodotest < Formula
   desc "frodo hb test"
   homepage "https://github.com/atomicsamurai/homebrew-frodotest"
   url "https://github.com/atomicsamurai/homebrew-frodotest/releases/download/0.23.0/frodotest-macos-0.23.0.tar.gz"

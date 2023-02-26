@@ -5,6 +5,6 @@ class Frodotest < Formula
   sha256 "17596ac6dc2ebad120461636a7d988d1371a512ee92d7f9aa6fb6ad14648a046"
   version "0.23.0"
   def install
-    bin.install "frodotest"
+    bin.install "frodo"
   end
 end

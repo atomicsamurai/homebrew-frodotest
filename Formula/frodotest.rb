@@ -1,10 +1,31 @@
+require "language/node"
+
 class Frodotest < Formula
-  desc "frodo hb test"
-  homepage "https://github.com/atomicsamurai/homebrew-frodotest"
-  url "https://github.com/atomicsamurai/homebrew-frodotest/releases/download/0.23.0/frodotest-macos-0.23.0.tar.gz"
-  sha256 "17596ac6dc2ebad120461636a7d988d1371a512ee92d7f9aa6fb6ad14648a046"
-  version "0.23.0"
+  desc "Command-line interface to manage ForgeRock Identity Cloud"
+  homepage "https://github.com/rockcarver/frodo-cli#readme"
+  url "https://github.com/rockcarver/frodo-cli.git", branch: "main", tag: "v0.22.0"
+  license "MIT"
+  head "https://github.com/rockcarver/frodo-cli.git", branch: "main"
+
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
+  depends_on "node@18"
+
   def install
-    bin.install "frodo"
+    system "npm", "install"
+    system "npm", "run", "build:binary"
+    on_macos do
+      bin.install Dir["#{buildpath}/dist/bin/macos/frodo"]
+    end
+    on_linux do
+      bin.install Dir["#{buildpath}/dist/bin/linux/frodo"]
+    end
+  end
+
+  test do
+    raise "Test not implemented."
   end
 end

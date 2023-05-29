@@ -16,6 +16,7 @@ jobs:
           formula-name: frodo-cli
           formula-path: Formula/frodo-cli.rb
           homebrew-tap: rockcarver/homebrew-frodo-cli
+          push-to: rockcarver/homebrew-frodo-cli
           download-url: https://github.com/rockcarver/frodo-cli.git
         env:
           COMMITTER_TOKEN: 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

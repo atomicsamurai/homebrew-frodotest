@@ -10,7 +10,7 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v2
+      - uses: atomicsamurai/bump-homebrew-formula-action@v2
         if: "!contains(github.ref, '-')"
         with:
           formula-name: frodo-cli

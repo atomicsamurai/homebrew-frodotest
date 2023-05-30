@@ -2,8 +2,7 @@ name: 'Test Release Pipeline'
 
 on:
   push:
-    branches:
-      - 'main'
+    tags: 'v*'
 
 jobs:
   homebrew-formula-update:

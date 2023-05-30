@@ -18,5 +18,5 @@ jobs:
           push-to: rockcarver/homebrew-frodo-cli
           download-url: https://github.com/rockcarver/frodo-cli.git
         env:
-          COMMITTER_TOKEN: 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
+          COMMITTER_TOKEN: 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
           #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

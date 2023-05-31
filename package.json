@@ -1,0 +1,26 @@
+{
+  "name": "mytest",
+  "version": "0.1",
+  "type": "module",
+  "description": "A command line interface to manage ForgeRock Identity Cloud tenants, ForgeOps deployments, and classic deployments.",
+  "main": "esm/launch.js",
+  "scripts": {
+    "test": "npx tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "build": "npx tsc && npx gulp",
+    "watch": "npx gulp watch"
+  },
+  "contributors": [
+    {
+      "name": "Sandeep Chaturvedi",
+      "email": "sandeep.chaturvedi@forgerock.com"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "yesno": "^0.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  }
+}

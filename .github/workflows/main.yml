@@ -80,7 +80,7 @@ jobs:
           prerelease: ${{ needs.bump-version.outputs.preRelease }}
           generate_release_notes: ${{ contains(needs.bump-version.outputs.newTag, '-') }}
           files: |
-            Release.txt
+            README.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
     outputs:

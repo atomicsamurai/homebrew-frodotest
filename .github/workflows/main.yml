@@ -1,22 +1,41 @@
-name: 'Test Release Pipeline'
+name: 'Frodo CLI Release Pipeline'
 
 on:
   push:
-    tags: 'v*'
+    branches:
+      - 'main'
 
 jobs:
-  homebrew-formula-update:
-    name: Bump Homebrew formula
+  bump-version:
+    name: 'Bump Version'
     runs-on: ubuntu-latest
+
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v2
-        if: "!contains(github.ref, '-')"
+      - name: Bump version
+        id: version-bump
+        uses: remorses/bump-version@js
         with:
-          formula-name: frodo-cli
-          formula-path: Formula/frodo-cli.rb
-          homebrew-tap: rockcarver/homebrew-frodo-cli
-          push-to: rockcarver/homebrew-frodo-cli
-          download-url: https://github.com/rockcarver/frodo-cli.git
+          version_file: ./VERSION
+          prefix: v
         env:
-          COMMITTER_TOKEN: ${{ secrets.PAT }}
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Output Tag'
+        run: echo newTag=$(cat ./VERSION) >> "$GITHUB_OUTPUT"
+
+    outputs:
+      newTag: ${{ steps.version-bump.outputs.newTag }}
+
+  release:
+    needs: [bump-version]
+    name: 'Release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: my app
+          tag_name: ${{ needs.bump-version.outputs.newTag }}
+          body: something
+          token: ${{ secrets.GITHUB_TOKEN }}

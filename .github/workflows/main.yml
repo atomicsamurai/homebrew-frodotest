@@ -88,3 +88,19 @@ jobs:
     outputs:
       newTag: ${{ needs.bump-version.outputs.newTag }}
       newVersion: ${{ needs.bump-version.outputs.newVersion }}
+  homebrew-formula-update:
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v2
+        if: "!contains(github.ref, '-')"
+        with:
+          formula-name: frodo-cli
+          formula-path: Formula/frodo-cli.rb
+          homebrew-tap: rockcarver/homebrew-frodo-cli
+          push-to: rockcarver/homebrew-frodo-cli
+          tag-name: ${{ needs.bump-version.outputs.newTag }}
+          download-url: https://github.com/rockcarver/frodo-cli.git
+        env:
+          COMMITTER_TOKEN: ${{ secrets.PAT }}
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

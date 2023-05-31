@@ -90,6 +90,7 @@ jobs:
       newVersion: ${{ needs.bump-version.outputs.newVersion }}
   homebrew-formula-update:
     name: Bump Homebrew formula
+    needs: [bump-version,release]
     runs-on: ubuntu-latest
     steps:
       - uses: mislav/bump-homebrew-formula-action@v2

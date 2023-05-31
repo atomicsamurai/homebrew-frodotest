@@ -1,4 +1,4 @@
-name: 'Frodo CLI Release Pipeline'
+name: 'My Release Pipeline'
 
 on:
   push:
@@ -11,20 +11,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Bump version
-        id: version-bump
-        uses: remorses/bump-version@js
+      - name: 'Checkout Source Code'
+        uses: 'actions/checkout@v2'
         with:
-          version_file: ./VERSION
-          prefix: v
+          ref: ${{ github.ref }}
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Automated Version Bump'
+        id: version-bump
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          rc-wording: ''
+          tag-prefix: 'v'
+          preid: ''
+          bump-policy: 'ignore'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 'cat package.json'
+        run: cat ./package.json
+
       - name: 'Output Tag'
-        run: echo newTag=$(cat ./VERSION) >> "$GITHUB_OUTPUT"
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
+
+      - name: 'Version From Tag'
+        id: version-from-tag
+        run: echo "::set-output name=version::$(echo '${{ steps.version-bump.outputs.newTag }}' | sed 's/v//')"
+
+      - name: 'Output Version'
+        id: output-version
+        run: echo "Version = ${{ steps.version-from-tag.outputs.version }}"
 
     outputs:
       newTag: ${{ steps.version-bump.outputs.newTag }}
+      newVersion: ${{ steps.version-from-tag.outputs.version }}
+      preRelease: ${{ contains(steps.version-bump.outputs.newTag, '-') }}
 
   release:
     needs: [bump-version]
@@ -32,10 +57,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'Checkout Source Code'
+        uses: 'actions/checkout@v2'
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 'Github SHA'
+        id: github-sha
+        run: echo ${{ github.sha }} > Release.txt
+
+      - name: 'Test Github SHA'
+        id: test-github-sha
+        run: cat Release.txt
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: my app
+          name: Frodo CLI ${{ needs.bump-version.outputs.newVersion }}
           tag_name: ${{ needs.bump-version.outputs.newTag }}
-          body: something
+          body: body body
+          prerelease: ${{ needs.bump-version.outputs.preRelease }}
+          generate_release_notes: ${{ contains(needs.bump-version.outputs.newTag, '-') }}
+          files: |
+            Release.txt
           token: ${{ secrets.GITHUB_TOKEN }}
+
+    outputs:
+      newTag: ${{ needs.bump-version.outputs.newTag }}
+      newVersion: ${{ needs.bump-version.outputs.newVersion }}
